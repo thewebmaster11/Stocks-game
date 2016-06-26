@@ -125,19 +125,25 @@ def start():
     thread.start_new_thread(update,())
     thread.start_new_thread(cmd,())
 if __name__ == '__main__':
+    if not os.path.exists('stocksgame'):
+        os.makedirs('stocksgame')
     slot = ''
     while True:
         files = os.listdir('stocksgame/')
-        for file in range(len(files)):
-            files[file] = files[file][:-4]
-        print 'Select one of the following, or type \'N\' to create a new file'
-        for file in files:
-            print file
-        while True:
-            slot = raw_input('-> ')
-            if slot in files + ['n','N']:
-                break
-            print 'Please select a valid file'
+        if len(files) != 0:
+            for file in range(len(files)):
+                files[file] = files[file][:-4]
+            print 'Select one of the following, or type \'N\' to create a new file'
+            for file in files:
+                print file
+            while True:
+                slot = raw_input('-> ')
+                if slot in files + ['n','N']:
+                    break
+                print 'Please select a valid file'
+        else:
+            print 'Welcome to the stocks game!'
+            slot = 'N'
         if slot.lower() == 'n':
             slot = raw_input('Type in the name of the file: ')
             stocklist = {}
