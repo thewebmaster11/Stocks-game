@@ -1,18 +1,16 @@
 #!/usr/bin/env python
-import random
-import time
-import thread
+from random import *
+from time import *
+from thread import *
 from Tkinter import *
-import os
+from os import *
 
 autosave = True
-def new(name=''):
+quitgame = False
+def new():
     global stocklist
-    if name != '':
-        stocklist[name] = 0
-        stocks[name] = 0
     else:
-        print 'Starting stock creator'
+        print 'Starting stock creator. Name as many stocks as you want and press enter to exit.'
         name = ' '
         while True:
             name = raw_input('Type in the name of the new stock: ')
@@ -30,7 +28,7 @@ def update():
     wait = 0
     while not stop:
         for item in stocklist:
-            change = random.randint(-10,10)
+            change = randint(-10,10)
             if change in range(-5,5):
                 continue
             if change < 0:
@@ -40,7 +38,7 @@ def update():
             stocklist[item] += change
             if stocklist[item] < 0:
                 stocklist[item] = 0
-        time.sleep(0.1)
+        sleep(0.1)
         wait += 1
         if not autosave:
             wait = 0
@@ -56,7 +54,7 @@ def save(cmd=False):
     print 'Saved!'
     if cmd:
         print '-> ',
-    time.sleep(1)
+    sleep(1)
 def cmd():
     global stop
     global money
@@ -68,10 +66,15 @@ def cmd():
     while not stop:
         cmd = raw_input('-> ')
         if cmd.lower() == 'help':
-            print 'Help: View this list\nBuy: Buy a stock\nSell: Sell a stock\nMoney: View your money\nStocks: View all the stocks\nStop: Quit the simulator\nSave: Save the game\nToggleSave: Turn autosaving on/off'
+            print 'Help: View this list\nBuy: Buy a stock\nSell: Sell a stock\nMoney: View your money'
+            print 'Stocks: View all the stocks\nStop: Quit the simulator\nSave: Save the game\nToggleSave: Turn autosaving on/off'
+            print '\nAlso note that capital letters do not affect the commands, only names of stocks.'
         elif cmd.lower() == 'money':
             print 'Your money: $%i' % money
-        elif cmd[0:4].lower() == 'buy ':
+        elif cmd[0:3].lower() == 'buy':
+            if cmd[4] != ' ':
+                print 'Requires the name of a stock after the command'
+                continue
             try:
                 stock = (cmd[4:])
                 if money > stocklist[stock]:
@@ -85,7 +88,10 @@ def cmd():
                     print 'Not enough money'
             except:
                 print 'Requires an existing stock after the command'
-        elif cmd[0:5].lower() == 'sell ':
+        elif cmd[0:4].lower() == 'sell':
+            if cmd[4] != ' ':
+                print 'Requires the name of a stock'
+                continue
             try:
                 stock = cmd[5:]
                 if stocks[stock] == 0:
@@ -119,21 +125,21 @@ def cmd():
         elif cmd == '':
             pass
         else:
-            print 'Command was not found'
+            print 'Command was not found. Type \'help\' to get a list of commands'
 def start():
-    print 'Starting game...'
-    thread.start_new_thread(update,())
-    thread.start_new_thread(cmd,())
-if __name__ == '__main__':
-    if not os.path.exists('stocksgame'):
-        os.makedirs('stocksgame')
+    print 'Starting game. Type \'help\' to get a list of commands.'
+    start_new_thread(update,())
+    start_new_thread(cmd,())
+while __name__ == '__main__' and not quitgame:
+    if not path.exists('stocksgame'):
+        makedirs('stocksgame')
     slot = ''
     while True:
-        files = os.listdir('stocksgame/')
+        files = listdir('stocksgame/')
         if len(files) != 0:
             for file in range(len(files)):
                 files[file] = files[file][:-4]
-            print 'Select one of the following, or type \'N\' to create a new file'
+            print 'Select one of the following, or type \'N\' to create a new file, or press Enter to exit.'
             for file in files:
                 print file
             while True:
@@ -167,9 +173,9 @@ if __name__ == '__main__':
                     with open('stocksgame/' + name + '.txt', 'w') as file:
                         file.write(data)
                     if l.lower() == 'r':
-                        os.remove('stocksgame/' + slot + '.txt')
+                        remove('stocksgame/' + slot + '.txt')
             if l.lower() == 'd':
-                os.remove('stocksgame/' + slot + '.txt')
+                remove('stocksgame/' + slot + '.txt')
             if l.lower() in ['c','d','r','p','m']:
                 break
             print 'That is not one of the options'
