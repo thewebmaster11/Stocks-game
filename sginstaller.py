@@ -11,7 +11,7 @@ def download():
     global file
 def downloadwin()
     download()
-    with open('C:\Python27\Stock simulator.py') as trg:
+    with open('C:/Python27/Stock simulator.py') as trg:
         trg.write(file)
     exit()
 view = Tk(screenName='Install Socket Game for Python 2.7')
